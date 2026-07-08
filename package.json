@@ -8,7 +8,12 @@
     "build:backend": "cd backend && npm install",
     "build": "npm run build:frontend && npm run build:backend",
     "electron:dev": "npm run build && electron .",
-    "dist:win": "npm run build && electron-packager . TMP-CMS --platform=win32 --arch=x64 --out=release --overwrite --ignore='release' --ignore='\\.git' --ignore='node_modules' --prune --asar"
+    "dist:win": "npm run build && npx electron-packager . TMP-CMS --platform=win32 --arch=x64 --out=release --overwrite --ignore='release' --ignore='\\.git' --prune"
+  },
+  "electronPackager": {
+    "asar": {
+      "unpack": "backend/**"
+    }
   },
   "devDependencies": {
     "@electron/packager": "^18.4.4",

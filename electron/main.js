@@ -6,6 +6,13 @@ const net = require('net');
 let mainWindow;
 let serverProcess;
 
+function getBackendPath() {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'app', 'backend');
+  }
+  return path.join(__dirname, '..', 'backend');
+}
+
 function getRandomPort() {
   return new Promise((resolve, reject) => {
     const server = net.createServer();
@@ -35,7 +42,8 @@ function createWindow() {
 
 function startServer(port) {
   return new Promise((resolve, reject) => {
-    const backendPath = path.join(__dirname, '..', 'backend', 'src', 'index.js');
+    const backendDir = getBackendPath();
+    const backendPath = path.join(backendDir, 'src', 'index.js');
     const env = Object.assign({}, process.env, {
       PORT: String(port),
       NODE_ENV: 'production',
@@ -45,7 +53,7 @@ function startServer(port) {
     serverProcess = fork(backendPath, [], {
       env,
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-      cwd: path.join(__dirname, '..', 'backend'),
+      cwd: backendDir,
     });
 
     serverProcess.on('message', (msg) => {
