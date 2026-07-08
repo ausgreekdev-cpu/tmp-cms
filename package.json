@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@electron/packager": "^18.4.4",
-    "electron": "^33.0.0"
+    "electron": "^41.7.1"
   },
   "engines": {
     "node": ">=20.0.0"
