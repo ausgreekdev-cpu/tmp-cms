@@ -1,0 +1,20 @@
+{
+  "name": "tmp-cms",
+  "version": "1.0.0",
+  "description": "Traffic Management Plan CMS - Desktop Application",
+  "main": "electron/main.js",
+  "scripts": {
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm install",
+    "build": "npm run build:frontend && npm run build:backend",
+    "electron:dev": "npm run build && electron .",
+    "dist:win": "npm run build && electron-packager . TMP-CMS --platform=win32 --arch=x64 --out=release --overwrite --ignore='release' --ignore='\\.git' --ignore='node_modules' --prune --asar"
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.4.4",
+    "electron": "^33.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

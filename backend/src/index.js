@@ -45,4 +45,7 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 app.listen(PORT, () => {
   console.log(`TMP CMS backend running on http://localhost:${PORT}`);
+  if (process.send) {
+    process.send({ type: 'server-started', port: PORT });
+  }
 });
