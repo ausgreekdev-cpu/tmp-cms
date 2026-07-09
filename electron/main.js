@@ -1,5 +1,5 @@
 const { app, BrowserWindow } = require('electron');
-const { fork } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 const net = require('net');
 
@@ -46,22 +46,29 @@ function startServer(port) {
     const backendPath = path.join(backendDir, 'src', 'index.js');
     let stderrBuffer = '';
 
+    const nodeExe = app.isPackaged
+      ? path.join(process.resourcesPath, 'node.exe')
+      : process.execPath;
+
     const env = Object.assign({}, process.env, {
       PORT: String(port),
       NODE_ENV: 'production',
       CORS_ORIGIN: `http://localhost:${port}`,
-      ELECTRON_RUN_AS_NODE: '1',
     });
 
-    serverProcess = fork(backendPath, [], {
+    serverProcess = spawn(nodeExe, [backendPath], {
       env,
       cwd: backendDir,
-      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-      silent: true,
+      stdio: ['pipe', 'pipe', 'pipe'],
+      windowsHide: true,
     });
 
     serverProcess.stdout.on('data', (data) => {
-      console.log('[backend]', data.toString().trim());
+      const msg = data.toString();
+      console.log('[backend]', msg.trim());
+      if (msg.includes('TMP CMS backend running') || msg.includes('server-started')) {
+        resolve(port);
+      }
     });
 
     serverProcess.stderr.on('data', (data) => {
@@ -70,14 +77,8 @@ function startServer(port) {
       stderrBuffer += msg + '\n';
     });
 
-    serverProcess.on('message', (msg) => {
-      if (msg && msg.type === 'server-started') {
-        resolve(port);
-      }
-    });
-
     serverProcess.on('error', (err) => {
-      reject(new Error(`Fork error: ${err.message}\nStderr:\n${stderrBuffer}`));
+      reject(new Error(`Spawn error: ${err.message}\nStderr:\n${stderrBuffer}`));
     });
 
     serverProcess.on('exit', (code) => {

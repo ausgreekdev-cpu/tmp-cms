@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@electron/packager": "^18.4.4",
+    "@electron/rebuild": "^3.7.2",
     "electron": "^41.7.1"
   },
   "engines": {

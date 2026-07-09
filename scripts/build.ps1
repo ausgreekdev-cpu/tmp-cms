@@ -38,6 +38,12 @@ try {
     }
   }
 
+  Write-Host "=== Bundling node.exe ==="
+  $nodeSrc = (Get-Command node).Source
+  $nodeDst = "$base\$OutputDir\TMP-CMS-win32-x64\resources\node.exe"
+  Copy-Item $nodeSrc $nodeDst -Force
+  Write-Host "  Bundled: node.exe ($((Get-Item $nodeDst).Length / 1MB) MB)"
+
   Write-Host "=== Done ==="
   $exe = "$base\$OutputDir\TMP-CMS-win32-x64\TMP-CMS.exe"
   Write-Host "EXE: $exe"
